@@ -5,17 +5,18 @@ import { ExperienceCard } from "@/components/ExperienceCard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Truck, Shield, Award, ArrowRight } from "lucide-react";
-import vegetablesImage from "@/assets/vegetables-market.jpg";
-import experienceImage from "@/assets/farm-experience.jpg";
-import strawberriesImage from "@/assets/strawberries.jpg";
-import heroImage from "@/assets/hero-farm.jpg";
+import indianVegetablesImage from "@/assets/indian-vegetables.jpg";
+import indianFarmTourImage from "@/assets/indian-farm-tour.jpg";
+import indianMangoesImage from "@/assets/indian-mangoes.jpg";
+import indianFarmerImage from "@/assets/indian-farmer.jpg";
+import indianWomanFarmerImage from "@/assets/indian-woman-farmer.jpg";
 
 const featuredFarms = [
   {
     id: 1,
     name: "Green Valley Organic Farm",
     farmer: "Ramesh Kumar",
-    image: heroImage,
+    image: indianFarmerImage,
     distance: 4.2,
     rating: 4.8,
     reviewCount: 127,
@@ -26,7 +27,7 @@ const featuredFarms = [
     id: 2,
     name: "Sunrise Vegetables",
     farmer: "Priya Sharma",
-    image: vegetablesImage,
+    image: indianVegetablesImage,
     distance: 6.5,
     rating: 4.6,
     reviewCount: 89,
@@ -37,7 +38,7 @@ const featuredFarms = [
     id: 3,
     name: "Happy Harvest Farm",
     farmer: "Anil Patel",
-    image: experienceImage,
+    image: indianWomanFarmerImage,
     distance: 8.1,
     rating: 4.9,
     reviewCount: 203,
@@ -49,10 +50,10 @@ const featuredFarms = [
 const seasonalProducts = [
   {
     id: 1,
-    name: "Organic Strawberries",
-    farmName: "Green Valley Farm",
-    image: strawberriesImage,
-    price: 200,
+    name: "Alphonso Mangoes",
+    farmName: "Konkan Organic Farm",
+    image: indianMangoesImage,
+    price: 300,
     unit: "kg",
     inStock: true,
     seasonal: true,
@@ -62,7 +63,7 @@ const seasonalProducts = [
     id: 2,
     name: "Fresh Tomatoes",
     farmName: "Sunrise Vegetables",
-    image: vegetablesImage,
+    image: indianVegetablesImage,
     price: 60,
     unit: "kg",
     inStock: true,
@@ -73,7 +74,7 @@ const seasonalProducts = [
     id: 3,
     name: "Mixed Greens",
     farmName: "Happy Harvest",
-    image: vegetablesImage,
+    image: indianVegetablesImage,
     price: 80,
     unit: "bunch",
     inStock: true,
@@ -87,7 +88,7 @@ const popularExperiences = [
     id: 1,
     title: "Organic Farm Day Tour",
     farmName: "Green Valley Farm",
-    image: experienceImage,
+    image: indianFarmTourImage,
     duration: "4 hours",
     price: 500,
     capacity: 20,
@@ -97,7 +98,7 @@ const popularExperiences = [
     id: 2,
     title: "Farm to Table Workshop",
     farmName: "Sunrise Vegetables",
-    image: vegetablesImage,
+    image: indianVegetablesImage,
     duration: "3 hours",
     price: 750,
     capacity: 15,

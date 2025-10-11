@@ -6,16 +6,17 @@ import { Slider } from "@/components/ui/slider";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Map, List, SlidersHorizontal } from "lucide-react";
-import heroImage from "@/assets/hero-farm.jpg";
-import vegetablesImage from "@/assets/vegetables-market.jpg";
-import experienceImage from "@/assets/farm-experience.jpg";
+import indianFarmerImage from "@/assets/indian-farmer.jpg";
+import indianVegetablesImage from "@/assets/indian-vegetables.jpg";
+import indianWomanFarmerImage from "@/assets/indian-woman-farmer.jpg";
+import indianFarmTourImage from "@/assets/indian-farm-tour.jpg";
 
 const mockFarms = [
   {
     id: 1,
     name: "Green Valley Organic Farm",
     farmer: "Ramesh Kumar",
-    image: heroImage,
+    image: indianFarmerImage,
     distance: 4.2,
     rating: 4.8,
     reviewCount: 127,
@@ -26,7 +27,7 @@ const mockFarms = [
     id: 2,
     name: "Sunrise Vegetables",
     farmer: "Priya Sharma",
-    image: vegetablesImage,
+    image: indianVegetablesImage,
     distance: 6.5,
     rating: 4.6,
     reviewCount: 89,
@@ -37,7 +38,7 @@ const mockFarms = [
     id: 3,
     name: "Happy Harvest Farm",
     farmer: "Anil Patel",
-    image: experienceImage,
+    image: indianWomanFarmerImage,
     distance: 8.1,
     rating: 4.9,
     reviewCount: 203,
@@ -48,7 +49,7 @@ const mockFarms = [
     id: 4,
     name: "Fresh Fields Cooperative",
     farmer: "Sunita Reddy",
-    image: heroImage,
+    image: indianFarmTourImage,
     distance: 12.3,
     rating: 4.7,
     reviewCount: 156,
@@ -59,7 +60,7 @@ const mockFarms = [
     id: 5,
     name: "Nature's Bounty Farm",
     farmer: "Vikram Singh",
-    image: vegetablesImage,
+    image: indianVegetablesImage,
     distance: 15.8,
     rating: 4.5,
     reviewCount: 78,
@@ -70,7 +71,7 @@ const mockFarms = [
     id: 6,
     name: "Organic Oasis",
     farmer: "Meena Desai",
-    image: experienceImage,
+    image: indianFarmerImage,
     distance: 18.2,
     rating: 4.9,
     reviewCount: 245,

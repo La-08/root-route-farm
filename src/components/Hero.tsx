@@ -1,7 +1,7 @@
 import { MapPin, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import heroImage from "@/assets/hero-farm.jpg";
+import indianFarmHero from "@/assets/indian-farm-hero.jpg";
 
 const categories = [
   "Fresh Vegetables",
@@ -18,7 +18,7 @@ export function Hero() {
       {/* Background Image */}
       <div
         className="absolute inset-0 bg-cover bg-center"
-        style={{ backgroundImage: `url(${heroImage})` }}
+        style={{ backgroundImage: `url(${indianFarmHero})` }}
       >
         <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/40 to-background" />
       </div>

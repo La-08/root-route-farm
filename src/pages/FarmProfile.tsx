@@ -14,10 +14,10 @@ import {
   Users,
   Sprout,
 } from "lucide-react";
-import heroImage from "@/assets/hero-farm.jpg";
-import vegetablesImage from "@/assets/vegetables-market.jpg";
-import experienceImage from "@/assets/farm-experience.jpg";
-import strawberriesImage from "@/assets/strawberries.jpg";
+import indianFarmerImage from "@/assets/indian-farmer.jpg";
+import indianVegetablesImage from "@/assets/indian-vegetables.jpg";
+import indianFarmTourImage from "@/assets/indian-farm-tour.jpg";
+import indianMangoesImage from "@/assets/indian-mangoes.jpg";
 
 // Mock data
 const farmData = {
@@ -31,16 +31,16 @@ const farmData = {
   rating: 4.8,
   reviewCount: 127,
   established: "2010",
-  images: [heroImage, experienceImage, vegetablesImage],
+  images: [indianFarmerImage, indianFarmTourImage, indianVegetablesImage],
   about:
     "Green Valley is a family-run organic farm spanning 15 acres, dedicated to sustainable farming practices. We grow seasonal vegetables, fruits, and herbs using traditional methods combined with modern organic techniques. Our farm has been certified organic since 2015 and we take pride in providing the freshest, healthiest produce to our community.",
   products: [
     {
       id: 1,
-      name: "Organic Strawberries",
+      name: "Alphonso Mangoes",
       farmName: "Green Valley Farm",
-      image: strawberriesImage,
-      price: 200,
+      image: indianMangoesImage,
+      price: 300,
       unit: "kg",
       inStock: true,
       seasonal: true,
@@ -50,7 +50,7 @@ const farmData = {
       id: 2,
       name: "Fresh Tomatoes",
       farmName: "Green Valley Farm",
-      image: vegetablesImage,
+      image: indianVegetablesImage,
       price: 60,
       unit: "kg",
       inStock: true,
@@ -61,7 +61,7 @@ const farmData = {
       id: 3,
       name: "Mixed Greens",
       farmName: "Green Valley Farm",
-      image: vegetablesImage,
+      image: indianVegetablesImage,
       price: 80,
       unit: "bunch",
       inStock: true,
@@ -74,7 +74,7 @@ const farmData = {
       id: 1,
       title: "Organic Farm Day Tour",
       farmName: "Green Valley Farm",
-      image: experienceImage,
+      image: indianFarmTourImage,
       duration: "4 hours",
       price: 500,
       capacity: 20,
@@ -84,7 +84,7 @@ const farmData = {
       id: 2,
       title: "Farm to Table Workshop",
       farmName: "Green Valley Farm",
-      image: vegetablesImage,
+      image: indianVegetablesImage,
       duration: "3 hours",
       price: 750,
       capacity: 15,

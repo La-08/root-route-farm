@@ -13,38 +13,38 @@ import {
   Store,
   Calendar,
 } from "lucide-react";
-import strawberriesImage from "@/assets/strawberries.jpg";
-import vegetablesImage from "@/assets/vegetables-market.jpg";
+import indianMangoesImage from "@/assets/indian-mangoes.jpg";
+import indianVegetablesImage from "@/assets/indian-vegetables.jpg";
 import { toast } from "sonner";
 
 const productData = {
   id: 1,
-  name: "Organic Strawberries",
+  name: "Alphonso Mangoes",
   category: "Fruits",
-  price: 200,
+  price: 300,
   unit: "kg",
   inStock: true,
   stock: 50,
   seasonal: true,
   organic: true,
-  images: [strawberriesImage, vegetablesImage],
+  images: [indianMangoesImage, indianVegetablesImage],
   farm: {
     id: 1,
-    name: "Green Valley Organic Farm",
+    name: "Konkan Organic Farm",
     farmer: "Ramesh Kumar",
     distance: 4.2,
     rating: 4.8,
     verified: true,
   },
   description:
-    "Fresh, juicy organic strawberries grown with love and care. Hand-picked at peak ripeness for maximum flavor and nutrition. Perfect for fresh eating, smoothies, or desserts.",
+    "Premium Alphonso mangoes, the king of mangoes, grown organically in the Konkan region. Hand-picked at perfect ripeness for maximum flavor and sweetness. Perfect for fresh eating, smoothies, or traditional Indian desserts.",
   nutritionalInfo: [
-    "Rich in Vitamin C and antioxidants",
-    "Low in calories, high in fiber",
-    "Supports heart health",
-    "Boosts immune system",
+    "Rich in Vitamin A and Vitamin C",
+    "High in dietary fiber",
+    "Contains antioxidants",
+    "Supports immune system and digestion",
   ],
-  harvestDate: "2024-10-10",
+  harvestDate: "2024-05-15",
   deliveryOptions: {
     homeDelivery: true,
     farmPickup: true,
@@ -55,10 +55,10 @@ const productData = {
 const similarProducts = [
   {
     id: 2,
-    name: "Fresh Blueberries",
+    name: "Fresh Tomatoes",
     farmName: "Green Valley Farm",
-    image: vegetablesImage,
-    price: 250,
+    image: indianVegetablesImage,
+    price: 60,
     unit: "kg",
     inStock: true,
     seasonal: true,
@@ -66,13 +66,13 @@ const similarProducts = [
   },
   {
     id: 3,
-    name: "Mixed Berries",
-    farmName: "Green Valley Farm",
-    image: strawberriesImage,
-    price: 220,
+    name: "Green Chilies",
+    farmName: "Happy Harvest Farm",
+    image: indianVegetablesImage,
+    price: 80,
     unit: "kg",
     inStock: true,
-    seasonal: true,
+    seasonal: false,
     organic: true,
   },
 ];
