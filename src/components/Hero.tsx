@@ -2,17 +2,27 @@ import { MapPin, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import indianFarmHero from "@/assets/indian-farm-hero.jpg";
+import { useEffect, useState } from "react";
 
 const categories = [
-  "Fresh Vegetables",
-  "Fruits",
-  "Dairy",
-  "Farm Visits",
-  "Workshops",
-  "Farm Stays",
+  "categories.fresh_vegetables",
+  "categories.fruits",
+  "categories.dairy",
+  "categories.farm_visits",
+  "categories.workshops",
+  "categories.farm_stays",
 ];
 
 export function Hero() {
+  const [, setTick] = useState(0);
+  useEffect(() => {
+    const h = () => setTick((s) => s + 1);
+    window.addEventListener("langchange", h);
+    return () => window.removeEventListener("langchange", h);
+  }, []);
+  const win = window as Window & { __i18n?: { t: (key: string) => string } };
+  const t = (k: string) => win.__i18n?.t(k) ?? k;
+
   return (
     <section className="relative min-h-[600px] flex items-center justify-center overflow-hidden">
       {/* Background Image */}
@@ -27,13 +37,10 @@ export function Hero() {
       <div className="relative z-10 container mx-auto px-4 py-20 text-center">
         <div className="max-w-4xl mx-auto animate-fade-in-up">
           <h1 className="font-display text-4xl md:text-6xl font-bold text-white mb-6 leading-tight">
-            Discover Fresh from the{" "}
-            <span className="gradient-sunset bg-clip-text text-transparent">
-              Farm
-            </span>
+            {t("hero_title")}
           </h1>
           <p className="text-lg md:text-xl text-white/90 mb-8 max-w-2xl mx-auto">
-            Connect directly with local farmers for fresh organic produce and authentic farm experiences
+            {t("hero_tagline")}
           </p>
 
           {/* Search Bar */}
@@ -42,19 +49,19 @@ export function Hero() {
               <div className="flex-1 relative">
                 <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                 <Input
-                  placeholder="Enter your location..."
+                  placeholder={t("hero_search_location")}
                   className="pl-10 border-0 focus-visible:ring-0 focus-visible:ring-offset-0 h-12"
                 />
               </div>
               <div className="flex-1 relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                 <Input
-                  placeholder="Search products or farms..."
+                  placeholder={t("hero_search")}
                   className="pl-10 border-0 focus-visible:ring-0 focus-visible:ring-offset-0 h-12"
                 />
               </div>
               <Button variant="hero" size="lg" className="h-12 px-8">
-                Search
+                {t("search_button")}
               </Button>
             </div>
           </div>
@@ -66,7 +73,7 @@ export function Hero() {
                 key={category}
                 className="px-4 py-2 bg-white/10 backdrop-blur-sm text-white rounded-full text-sm font-medium hover:bg-white/20 transition-smooth border border-white/20"
               >
-                {category}
+                {t(category)}
               </button>
             ))}
           </div>

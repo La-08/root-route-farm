@@ -2,6 +2,7 @@ import { Clock, Users, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 interface ExperienceCardProps {
   id: number;
@@ -24,6 +25,20 @@ export function ExperienceCard({
   capacity,
   distance,
 }: ExperienceCardProps) {
+  // re-render on language change
+  const [, setTick] = useState(0);
+  useEffect(() => {
+    const h = () => setTick((s) => s + 1);
+    window.addEventListener("langchange", h);
+    return () => window.removeEventListener("langchange", h);
+  }, []);
+
+  interface I18n {
+    t: (key: string) => string;
+  }
+
+  const t = (k: string) => ((window as Window & { __i18n?: I18n }).__i18n?.t(k)) ?? k;
+
   return (
     <Link to={`/experience/${id}`}>
       <Card className="overflow-hidden hover-lift transition-smooth cursor-pointer group">
@@ -36,9 +51,9 @@ export function ExperienceCard({
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
           <div className="absolute bottom-3 left-3 right-3">
             <h3 className="font-display text-xl font-bold text-white mb-1">
-              {title}
+              {t(title)}
             </h3>
-            <p className="text-sm text-white/90">{farmName}</p>
+            <p className="text-sm text-white/90">{t(farmName)}</p>
           </div>
         </div>
         <div className="p-4">
@@ -49,22 +64,22 @@ export function ExperienceCard({
             </div>
             <div className="flex items-center gap-1">
               <Users className="h-4 w-4" />
-              <span>Up to {capacity}</span>
+              <span>{t("up_to").replace("{capacity}", String(capacity))}</span>
             </div>
             <div className="flex items-center gap-1">
               <MapPin className="h-4 w-4" />
-              <span>{distance}km</span>
+              <span>{t("distance_km").replace("{distance}", String(distance))}</span>
             </div>
           </div>
           <div className="flex items-center justify-between">
             <div>
-              <span className="text-sm text-muted-foreground">From</span>
+              <span className="text-sm text-muted-foreground">{t("from_label")}</span>
               <div>
                 <span className="text-2xl font-bold text-primary">₹{price}</span>
-                <span className="text-sm text-muted-foreground ml-1">/person</span>
+                <span className="text-sm text-muted-foreground ml-1">{t("per_person")}</span>
               </div>
             </div>
-            <Button variant="outline">View Details</Button>
+            <Button variant="outline">{t("view_details")}</Button>
           </div>
         </div>
       </Card>

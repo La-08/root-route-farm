@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { ProductCard } from "@/components/ProductCard";
 import { ExperienceCard } from "@/components/ExperienceCard";
@@ -22,7 +22,7 @@ import indianMangoesImage from "@/assets/indian-mangoes.jpg";
 // Mock data
 const farmData = {
   id: 1,
-  name: "Green Valley Organic Farm",
+  name: "farm.1.name",
   farmer: { name: "Ramesh Kumar", avatar: "RK" },
   location: "Hyderabad, Telangana",
   distance: 4.2,
@@ -94,6 +94,16 @@ const farmData = {
 };
 
 export default function FarmProfile() {
+  const [, setTick] = useState(0);
+  useEffect(() => {
+    const h = () => setTick((s) => s + 1);
+    window.addEventListener("langchange", h);
+    return () => window.removeEventListener("langchange", h);
+  }, []);
+  type Win = Window & { __i18n?: { t: (k: string) => string } };
+  const w = window as Win;
+  const t = (k: string) => w.__i18n?.t(k) ?? k;
+
   const { id } = useParams();
   const [selectedImage, setSelectedImage] = useState(0);
 
@@ -113,17 +123,17 @@ export default function FarmProfile() {
               <div className="text-white">
                 <div className="flex items-center gap-3 mb-2">
                   <h1 className="font-display text-4xl font-bold">
-                    {farmData.name}
+                    {t(farmData.name)}
                   </h1>
                   {farmData.verified && (
                     <Badge variant="verified" className="shadow-soft">
                       <BadgeCheck className="h-3 w-3 mr-1" />
-                      Verified
+                      {t("verified")}
                     </Badge>
                   )}
                   {farmData.organic && (
                     <Badge variant="organic" className="shadow-soft">
-                      Organic Certified
+                      {t("organic_certified")}
                     </Badge>
                   )}
                 </div>
@@ -131,15 +141,15 @@ export default function FarmProfile() {
                   <div className="flex items-center gap-1">
                     <Star className="h-5 w-5 fill-accent text-accent" />
                     <span className="font-semibold">{farmData.rating}</span>
-                    <span>({farmData.reviewCount} reviews)</span>
+                    <span>({farmData.reviewCount} {t("customer_reviews")?.toLowerCase()})</span>
                   </div>
                   <div className="flex items-center gap-1">
                     <MapPin className="h-5 w-5" />
-                    <span>{farmData.distance}km away</span>
+                    <span>{t("distance_label")}: {farmData.distance}km</span>
                   </div>
                   <div className="flex items-center gap-1">
                     <Calendar className="h-5 w-5" />
-                    <span>Est. {farmData.established}</span>
+                    <span>{t("established_label")}: {farmData.established}</span>
                   </div>
                 </div>
               </div>
@@ -196,31 +206,31 @@ export default function FarmProfile() {
             <div className="grid md:grid-cols-3 gap-6">
               <div className="md:col-span-2">
                 <h2 className="font-display text-2xl font-bold mb-4">
-                  About {farmData.name}
+                  {t("about_title") ?? `About ${t(farmData.name)}`}
                 </h2>
                 <p className="text-muted-foreground leading-relaxed mb-6">
-                  {farmData.about}
+                  {t("practice.organic") /* keep short intro via translations if you want */}
                 </p>
 
                 <h3 className="font-display text-xl font-bold mb-4">
-                  Farming Practices
+                  {t("farming_practices") ?? "Farming Practices"}
                 </h3>
                 <ul className="space-y-3 text-muted-foreground">
                   <li className="flex items-start gap-3">
                     <Sprout className="h-5 w-5 text-primary mt-0.5" />
-                    <span>100% organic, no synthetic pesticides or fertilizers</span>
+                    <span>{t("practice.organic")}</span>
                   </li>
                   <li className="flex items-start gap-3">
                     <Sprout className="h-5 w-5 text-primary mt-0.5" />
-                    <span>Crop rotation and companion planting</span>
+                    <span>{t("practice.crop_rotation")}</span>
                   </li>
                   <li className="flex items-start gap-3">
                     <Sprout className="h-5 w-5 text-primary mt-0.5" />
-                    <span>Rainwater harvesting and drip irrigation</span>
+                    <span>{t("practice.water_harvesting")}</span>
                   </li>
                   <li className="flex items-start gap-3">
                     <Sprout className="h-5 w-5 text-primary mt-0.5" />
-                    <span>Compost-based soil enrichment</span>
+                    <span>{t("practice.compost")}</span>
                   </li>
                 </ul>
               </div>
@@ -228,7 +238,7 @@ export default function FarmProfile() {
               <div className="space-y-4">
                 <div className="bg-card rounded-lg p-6 shadow-soft">
                   <h3 className="font-display font-bold mb-4">
-                    Meet the Farmer
+                    {t("meet_the_farmer")}
                   </h3>
                   <div className="flex items-center gap-3 mb-4">
                     <div className="h-16 w-16 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-display text-xl font-bold">
@@ -237,30 +247,30 @@ export default function FarmProfile() {
                     <div>
                       <p className="font-semibold">{farmData.farmer.name}</p>
                       <p className="text-sm text-muted-foreground">
-                        Farm Owner
+                        {t("farm_owner")}
                       </p>
                     </div>
                   </div>
-                  <Button className="w-full">Contact Farmer</Button>
+                  <Button className="w-full">{t("contact_host")}</Button>
                 </div>
 
                 <div className="bg-card rounded-lg p-6 shadow-soft">
-                  <h3 className="font-display font-bold mb-4">Quick Info</h3>
+                  <h3 className="font-display font-bold mb-4">{t("quick_info")}</h3>
                   <div className="space-y-3 text-sm">
                     <div className="flex justify-between">
-                      <span className="text-muted-foreground">Distance</span>
+                      <span className="text-muted-foreground">{t("distance_label")}</span>
                       <span className="font-semibold">
                         {farmData.distance}km
                       </span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-muted-foreground">Established</span>
+                      <span className="text-muted-foreground">{t("established_label")}</span>
                       <span className="font-semibold">
                         {farmData.established}
                       </span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-muted-foreground">Rating</span>
+                      <span className="text-muted-foreground">{t("rating_label")}</span>
                       <span className="font-semibold">
                         {farmData.rating} ★ ({farmData.reviewCount})
                       </span>
@@ -274,10 +284,10 @@ export default function FarmProfile() {
           <TabsContent value="products">
             <div className="mb-6">
               <h2 className="font-display text-2xl font-bold mb-2">
-                Available Products
+                {t("available_products")}
               </h2>
               <p className="text-muted-foreground">
-                Fresh produce from our farm
+                {t("fresh_produce")}
               </p>
             </div>
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -290,10 +300,10 @@ export default function FarmProfile() {
           <TabsContent value="experiences">
             <div className="mb-6">
               <h2 className="font-display text-2xl font-bold mb-2">
-                Farm Experiences
+                {t("farm_experiences")}
               </h2>
               <p className="text-muted-foreground">
-                Visit our farm and learn about organic farming
+                {t("fresh_produce")}
               </p>
             </div>
             <div className="grid sm:grid-cols-2 gap-6">
@@ -306,10 +316,10 @@ export default function FarmProfile() {
           <TabsContent value="reviews">
             <div className="mb-6">
               <h2 className="font-display text-2xl font-bold mb-2">
-                Customer Reviews
+                {t("customer_reviews")}
               </h2>
               <p className="text-muted-foreground">
-                {farmData.reviewCount} reviews
+                {farmData.reviewCount} {t("customer_reviews").toLowerCase()}
               </p>
             </div>
             <div className="space-y-4">
@@ -347,14 +357,14 @@ export default function FarmProfile() {
 
           <TabsContent value="location">
             <div className="mb-6">
-              <h2 className="font-display text-2xl font-bold mb-2">Location</h2>
+              <h2 className="font-display text-2xl font-bold mb-2">{t("location_label") ?? "Location"}</h2>
               <p className="text-muted-foreground">{farmData.location}</p>
             </div>
             <div className="bg-muted rounded-lg h-[400px] flex items-center justify-center">
               <div className="text-center">
                 <MapPin className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-                <p className="text-muted-foreground">Map view coming soon</p>
-                <Button className="mt-4">Get Directions</Button>
+                <p className="text-muted-foreground">{t("map_coming_soon")}</p>
+                <Button className="mt-4">{t("get_directions")}</Button>
               </div>
             </div>
           </TabsContent>

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -19,7 +19,7 @@ import { toast } from "sonner";
 
 const productData = {
   id: 1,
-  name: "Alphonso Mangoes",
+  name: "product.4.name",
   category: "Fruits",
   price: 300,
   unit: "kg",
@@ -78,6 +78,16 @@ const similarProducts = [
 ];
 
 export default function ProductDetail() {
+  const [, setTick] = useState(0);
+  useEffect(() => {
+    const h = () => setTick((s) => s + 1);
+    window.addEventListener("langchange", h);
+    return () => window.removeEventListener("langchange", h);
+  }, []);
+  type Win = Window & { __i18n?: { t: (k: string) => string } };
+  const w = window as Win;
+  const t = (k: string) => w.__i18n?.t(k) ?? k;
+
   const { id } = useParams();
   const [quantity, setQuantity] = useState(1);
   const [selectedImage, setSelectedImage] = useState(0);
@@ -92,11 +102,11 @@ export default function ProductDetail() {
         {/* Breadcrumb */}
         <div className="flex items-center gap-2 text-sm text-muted-foreground mb-6">
           <Link to="/" className="hover:text-primary">
-            Home
+            {t("home") ?? "Home"}
           </Link>
           <span>/</span>
           <Link to="/products" className="hover:text-primary">
-            Products
+            {t("products")}
           </Link>
           <span>/</span>
           <span className="text-foreground">{productData.name}</span>
@@ -142,7 +152,7 @@ export default function ProductDetail() {
               <Badge variant="success">In Stock ({productData.stock}kg)</Badge>
             </div>
             <h1 className="font-display text-4xl font-bold mb-2">
-              {productData.name}
+              {t(productData.name)}
             </h1>
             <p className="text-muted-foreground mb-4">{productData.category}</p>
 
@@ -189,7 +199,7 @@ export default function ProductDetail() {
             {/* Description */}
             <div className="mb-6">
               <h2 className="font-display text-xl font-bold mb-3">
-                Description
+                {t("description")}
               </h2>
               <p className="text-muted-foreground leading-relaxed">
                 {productData.description}
@@ -199,7 +209,7 @@ export default function ProductDetail() {
             {/* Nutritional Info */}
             <div className="mb-6">
               <h2 className="font-display text-xl font-bold mb-3">
-                Nutritional Benefits
+                {t("nutritional_benefits")}
               </h2>
               <ul className="space-y-2">
                 {productData.nutritionalInfo.map((info, idx) => (
@@ -216,7 +226,9 @@ export default function ProductDetail() {
 
             {/* Quantity Selector */}
             <div className="mb-6">
-              <label className="font-semibold mb-3 block">Quantity (kg)</label>
+              <label className="font-semibold mb-3 block">
+                {t("quantity_label")}
+              </label>
               <div className="flex items-center gap-3">
                 <Button
                   variant="outline"
@@ -238,7 +250,9 @@ export default function ProductDetail() {
                   <Plus className="h-4 w-4" />
                 </Button>
                 <div className="ml-auto text-right">
-                  <p className="text-sm text-muted-foreground">Total</p>
+                  <p className="text-sm text-muted-foreground">
+                    {t("total_label")}
+                  </p>
                   <p className="text-2xl font-bold text-primary">
                     ₹{productData.price * quantity}
                   </p>
@@ -248,12 +262,12 @@ export default function ProductDetail() {
 
             {/* Delivery Options */}
             <div className="bg-muted/50 rounded-lg p-4 mb-6">
-              <h3 className="font-semibold mb-3">Delivery Options</h3>
+              <h3 className="font-semibold mb-3">{t("delivery_options")}</h3>
               <div className="space-y-2">
                 {productData.deliveryOptions.homeDelivery && (
                   <div className="flex items-center gap-2 text-sm">
                     <Truck className="h-4 w-4 text-primary" />
-                    <span>Home Delivery Available</span>
+                    <span>{t("home_delivery")}</span>
                   </div>
                 )}
                 {productData.deliveryOptions.farmPickup && (
@@ -278,7 +292,7 @@ export default function ProductDetail() {
               onClick={handleAddToCart}
             >
               <ShoppingCart className="h-5 w-5" />
-              Add to Cart - ₹{productData.price * quantity}
+              {t("add_to_cart").replace("{price}", String(productData.price * quantity))}
             </Button>
           </div>
         </div>
@@ -286,7 +300,7 @@ export default function ProductDetail() {
         {/* Similar Products */}
         <section>
           <h2 className="font-display text-3xl font-bold mb-6">
-            Similar Products
+            {t("similar_products")}
           </h2>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {similarProducts.map((product) => (

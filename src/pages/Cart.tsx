@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,8 +20,8 @@ interface CartItem {
 const mockCartItems: CartItem[] = [
   {
     id: 1,
-    name: "Organic Strawberries",
-    farmName: "Green Valley Farm",
+    name: "product.1.name",
+    farmName: "farm.1.name",
     image: strawberriesImage,
     price: 200,
     unit: "kg",
@@ -29,8 +29,8 @@ const mockCartItems: CartItem[] = [
   },
   {
     id: 2,
-    name: "Fresh Tomatoes",
-    farmName: "Sunrise Vegetables",
+    name: "product.2.name",
+    farmName: "farm.2.name",
     image: vegetablesImage,
     price: 60,
     unit: "kg",
@@ -39,6 +39,16 @@ const mockCartItems: CartItem[] = [
 ];
 
 export default function Cart() {
+  const [, setTick] = useState(0);
+  useEffect(() => {
+    const h = () => setTick((s) => s + 1);
+    window.addEventListener("langchange", h);
+    return () => window.removeEventListener("langchange", h);
+  }, []);
+  type Win = Window & { __i18n?: { t: (k: string) => string } };
+  const w = window as Win;
+  const t = (k: string) => w.__i18n?.t(k) ?? k;
+
   const [cartItems, setCartItems] = useState<CartItem[]>(mockCartItems);
   const [promoCode, setPromoCode] = useState("");
 
@@ -68,13 +78,11 @@ export default function Cart() {
         <div className="text-center">
           <ShoppingBag className="h-24 w-24 text-muted-foreground mx-auto mb-6" />
           <h2 className="font-display text-3xl font-bold mb-4">
-            Your cart is empty
+            {t("cart_empty_title")}
           </h2>
-          <p className="text-muted-foreground mb-8">
-            Start adding some fresh produce!
-          </p>
+          <p className="text-muted-foreground mb-8">{t("cart_empty_sub")}</p>
           <Link to="/">
-            <Button size="lg">Browse Products</Button>
+            <Button size="lg">{t("browse_products")}</Button>
           </Link>
         </div>
       </div>
@@ -84,7 +92,9 @@ export default function Cart() {
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8">
-        <h1 className="font-display text-4xl font-bold mb-8">Shopping Cart</h1>
+        <h1 className="font-display text-4xl font-bold mb-8">
+          {t("shopping_cart")}
+        </h1>
 
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Cart Items */}
@@ -108,11 +118,11 @@ export default function Cart() {
                       className="hover:text-primary transition-colors"
                     >
                       <h3 className="font-semibold text-lg mb-1">
-                        {item.name}
+                        {t(item.name)}
                       </h3>
                     </Link>
                     <p className="text-sm text-muted-foreground mb-3">
-                      {item.farmName}
+                      {t(item.farmName)}
                     </p>
                     <p className="text-xl font-bold text-primary">
                       ₹{item.price}
@@ -164,30 +174,31 @@ export default function Cart() {
           <div className="lg:col-span-1">
             <div className="bg-card rounded-lg p-6 shadow-soft sticky top-24">
               <h2 className="font-display text-2xl font-bold mb-6">
-                Order Summary
+                {t("order_summary")}
               </h2>
 
               <div className="space-y-4 mb-6">
                 <div className="flex justify-between text-muted-foreground">
-                  <span>Subtotal</span>
-                  <span className="font-semibold text-foreground">
-                    ₹{subtotal}
-                  </span>
+                  <span>{t("subtotal")}</span>
+                  <span className="font-semibold text-foreground">₹{subtotal}</span>
                 </div>
                 <div className="flex justify-between text-muted-foreground">
-                  <span>Delivery Fee</span>
+                  <span>{t("delivery_fee")}</span>
                   <span className="font-semibold text-foreground">
-                    {deliveryFee === 0 ? "FREE" : `₹${deliveryFee}`}
+                    {deliveryFee === 0 ? t("free") : `₹${deliveryFee}`}
                   </span>
                 </div>
                 {subtotal < 500 && (
                   <p className="text-xs text-muted-foreground">
-                    Add ₹{500 - subtotal} more for free delivery
+                    {t("add_for_free_delivery").replace(
+                      "{amount}",
+                      String(500 - subtotal)
+                    )}
                   </p>
                 )}
                 <Separator />
                 <div className="flex justify-between text-lg font-bold">
-                  <span>Total</span>
+                  <span>{t("total")}</span>
                   <span className="text-primary">₹{total}</span>
                 </div>
               </div>
@@ -196,22 +207,22 @@ export default function Cart() {
               <div className="mb-6">
                 <div className="flex gap-2">
                   <Input
-                    placeholder="Promo code"
+                    placeholder={t("promo_code")}
                     value={promoCode}
                     onChange={(e) => setPromoCode(e.target.value)}
                   />
-                  <Button variant="outline">Apply</Button>
+                  <Button variant="outline">{t("apply")}</Button>
                 </div>
               </div>
 
               <Link to="/checkout">
                 <Button size="lg" className="w-full mb-3">
-                  Proceed to Checkout
+                  {t("proceed_to_checkout")}
                 </Button>
               </Link>
               <Link to="/">
                 <Button variant="outline" size="lg" className="w-full">
-                  Continue Shopping
+                  {t("continue_shopping")}
                 </Button>
               </Link>
             </div>
