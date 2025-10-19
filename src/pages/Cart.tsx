@@ -4,39 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { Minus, Plus, Trash2, ShoppingBag } from "lucide-react";
-import strawberriesImage from "@/assets/strawberries.jpg";
-import vegetablesImage from "@/assets/vegetables-market.jpg";
-
-interface CartItem {
-  id: number;
-  name: string;
-  farmName: string;
-  image: string;
-  price: number;
-  unit: string;
-  quantity: number;
-}
-
-const mockCartItems: CartItem[] = [
-  {
-    id: 1,
-    name: "product.1.name",
-    farmName: "farm.1.name",
-    image: strawberriesImage,
-    price: 200,
-    unit: "kg",
-    quantity: 2,
-  },
-  {
-    id: 2,
-    name: "product.2.name",
-    farmName: "farm.2.name",
-    image: vegetablesImage,
-    price: 60,
-    unit: "kg",
-    quantity: 5,
-  },
-];
+import { useCart } from "@/contexts/CartContext";
 
 export default function Cart() {
   const [, setTick] = useState(0);
@@ -49,30 +17,28 @@ export default function Cart() {
   const w = window as Win;
   const t = (k: string) => w.__i18n?.t(k) ?? k;
 
-  const [cartItems, setCartItems] = useState<CartItem[]>(mockCartItems);
+  const { items, updateQuantity, removeFromCart, getTotalPrice } = useCart();
   const [promoCode, setPromoCode] = useState("");
+  const [discount, setDiscount] = useState(0);
 
-  const updateQuantity = (id: number, newQuantity: number) => {
-    if (newQuantity < 1) return;
-    setCartItems(
-      cartItems.map((item) =>
-        item.id === id ? { ...item, quantity: newQuantity } : item
-      )
-    );
-  };
-
-  const removeItem = (id: number) => {
-    setCartItems(cartItems.filter((item) => item.id !== id));
-  };
-
-  const subtotal = cartItems.reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0
-  );
+  const subtotal = getTotalPrice();
   const deliveryFee = subtotal > 500 ? 0 : 40;
-  const total = subtotal + deliveryFee;
+  const total = subtotal + deliveryFee - discount;
 
-  if (cartItems.length === 0) {
+  const applyPromoCode = () => {
+    const validCodes = {
+      'FRESH10': 0.1,
+      'ORGANIC15': 0.15,
+      'HARVEST20': 0.2
+    };
+    
+    const promoUpper = promoCode.toUpperCase();
+    if (validCodes[promoUpper as keyof typeof validCodes]) {
+      setDiscount(subtotal * validCodes[promoUpper as keyof typeof validCodes]);
+    }
+  };
+
+  if (items.length === 0) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
@@ -81,7 +47,7 @@ export default function Cart() {
             {t("cart_empty_title")}
           </h2>
           <p className="text-muted-foreground mb-8">{t("cart_empty_sub")}</p>
-          <Link to="/">
+          <Link to="/products">
             <Button size="lg">{t("browse_products")}</Button>
           </Link>
         </div>
@@ -98,133 +64,112 @@ export default function Cart() {
 
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Cart Items */}
-          <div className="lg:col-span-2 space-y-4">
-            {cartItems.map((item) => (
-              <div
-                key={item.id}
-                className="bg-card rounded-lg p-6 shadow-soft hover-lift transition-smooth"
-              >
-                <div className="flex gap-4">
-                  <Link to={`/product/${item.id}`}>
-                    <img
-                      src={item.image}
-                      alt={item.name}
-                      className="h-24 w-24 rounded-lg object-cover"
-                    />
-                  </Link>
+          <div className="lg:col-span-2">
+            <div className="space-y-6">
+              {items.map((item) => (
+                <div
+                  key={item.id}
+                  className="flex items-center gap-4 p-4 border rounded-lg"
+                >
+                  <img
+                    src={item.image}
+                    alt={item.name}
+                    className="w-20 h-20 object-cover rounded-md"
+                  />
                   <div className="flex-1">
-                    <Link
-                      to={`/product/${item.id}`}
-                      className="hover:text-primary transition-colors"
-                    >
-                      <h3 className="font-semibold text-lg mb-1">
-                        {t(item.name)}
-                      </h3>
-                    </Link>
-                    <p className="text-sm text-muted-foreground mb-3">
+                    <h3 className="font-semibold">{t(item.name)}</h3>
+                    <p className="text-sm text-muted-foreground">
                       {t(item.farmName)}
                     </p>
-                    <p className="text-xl font-bold text-primary">
-                      ₹{item.price}
-                      <span className="text-sm text-muted-foreground ml-1">
-                        /{item.unit}
-                      </span>
+                    <p className="text-sm font-medium">
+                      ₹{item.price}/{item.unit}
                     </p>
                   </div>
-                  <div className="flex flex-col items-end justify-between">
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                    >
+                      <Minus className="h-4 w-4" />
+                    </Button>
+                    <span className="w-12 text-center">{item.quantity}</span>
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                    >
+                      <Plus className="h-4 w-4" />
+                    </Button>
+                  </div>
+                  <div className="text-right">
+                    <p className="font-semibold">
+                      ₹{(item.price * item.quantity).toFixed(2)}
+                    </p>
                     <Button
                       variant="ghost"
-                      size="icon"
-                      onClick={() => removeItem(item.id)}
+                      size="sm"
+                      onClick={() => removeFromCart(item.id)}
                       className="text-destructive hover:text-destructive"
                     >
-                      <Trash2 className="h-5 w-5" />
+                      <Trash2 className="h-4 w-4" />
                     </Button>
-                    <div className="flex items-center gap-2">
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        className="h-8 w-8"
-                        onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                      >
-                        <Minus className="h-4 w-4" />
-                      </Button>
-                      <span className="w-12 text-center font-semibold">
-                        {item.quantity}
-                      </span>
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        className="h-8 w-8"
-                        onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                      >
-                        <Plus className="h-4 w-4" />
-                      </Button>
-                    </div>
-                    <p className="font-bold text-lg">
-                      ₹{item.price * item.quantity}
-                    </p>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
 
           {/* Order Summary */}
           <div className="lg:col-span-1">
-            <div className="bg-card rounded-lg p-6 shadow-soft sticky top-24">
-              <h2 className="font-display text-2xl font-bold mb-6">
-                {t("order_summary")}
-              </h2>
-
-              <div className="space-y-4 mb-6">
-                <div className="flex justify-between text-muted-foreground">
-                  <span>{t("subtotal")}</span>
-                  <span className="font-semibold text-foreground">₹{subtotal}</span>
-                </div>
-                <div className="flex justify-between text-muted-foreground">
-                  <span>{t("delivery_fee")}</span>
-                  <span className="font-semibold text-foreground">
-                    {deliveryFee === 0 ? t("free") : `₹${deliveryFee}`}
-                  </span>
-                </div>
-                {subtotal < 500 && (
-                  <p className="text-xs text-muted-foreground">
-                    {t("add_for_free_delivery").replace(
-                      "{amount}",
-                      String(500 - subtotal)
-                    )}
-                  </p>
-                )}
-                <Separator />
-                <div className="flex justify-between text-lg font-bold">
-                  <span>{t("total")}</span>
-                  <span className="text-primary">₹{total}</span>
-                </div>
-              </div>
-
+            <div className="border rounded-lg p-6 sticky top-4">
+              <h2 className="font-semibold text-lg mb-4">{t("order_summary")}</h2>
+              
               {/* Promo Code */}
-              <div className="mb-6">
+              <div className="mb-4">
                 <div className="flex gap-2">
                   <Input
                     placeholder={t("promo_code")}
                     value={promoCode}
                     onChange={(e) => setPromoCode(e.target.value)}
                   />
-                  <Button variant="outline">{t("apply")}</Button>
+                  <Button variant="outline" onClick={applyPromoCode}>
+                    {t("apply")}
+                  </Button>
                 </div>
               </div>
 
-              <Link to="/checkout">
-                <Button size="lg" className="w-full mb-3">
-                  {t("proceed_to_checkout")}
-                </Button>
-              </Link>
-              <Link to="/">
-                <Button variant="outline" size="lg" className="w-full">
-                  {t("continue_shopping")}
-                </Button>
-              </Link>
+              <Separator className="my-4" />
+
+              <div className="space-y-2">
+                <div className="flex justify-between">
+                  <span>{t("subtotal")}</span>
+                  <span>₹{subtotal.toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>{t("delivery_fee")}</span>
+                  <span>{deliveryFee === 0 ? t("free") : `₹${deliveryFee}`}</span>
+                </div>
+                {discount > 0 && (
+                  <div className="flex justify-between text-green-600">
+                    <span>{t("discount")}</span>
+                    <span>-₹{discount.toFixed(2)}</span>
+                  </div>
+                )}
+                <Separator />
+                <div className="flex justify-between font-semibold text-lg">
+                  <span>{t("total")}</span>
+                  <span>₹{total.toFixed(2)}</span>
+                </div>
+              </div>
+
+              <Button className="w-full mt-6" size="lg">
+                {t("proceed_to_checkout")}
+              </Button>
+
+              <p className="text-sm text-muted-foreground mt-4 text-center">
+                {subtotal < 500 && t("free_delivery_hint")}
+              </p>
             </div>
           </div>
         </div>

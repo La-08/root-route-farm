@@ -3,7 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Link } from "react-router-dom";
-import { toast } from "sonner";
+import { useCart } from "@/contexts/CartContext";
 import { useEffect, useState } from "react";
 
 interface ProductCardProps {
@@ -39,14 +39,21 @@ export function ProductCard({
   const t = (k: string) =>
     (window as unknown as Window & { __i18n?: I18n }).__i18n?.t(k) ?? k;
 
+  const { addToCart } = useCart();
   const displayName = t(name);
   const displayFarm = t(farmName);
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
-    const template = t("added_to_cart");
-    const msg = template.replace("{name}", displayName);
-    toast.success(msg);
+    e.stopPropagation();
+    addToCart({
+      id,
+      name,
+      farmName,
+      image,
+      price,
+      unit
+    });
   };
 
   return (
