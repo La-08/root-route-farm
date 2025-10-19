@@ -1,9 +1,14 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import { Sprout, ShoppingCart, User, Menu, Search } from "lucide-react";
+import { Sprout, ShoppingCart, User, Menu, Search, LogOut, Settings, Package, Calendar, LayoutDashboard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { AuthModal } from "@/components/AuthModal";
+import { useAuth } from "@/contexts/AuthContext";
 import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
+import { getDashboardPath } from "@/components/ProtectedRoute";
 
 declare global {
 	interface Window {
@@ -18,6 +23,8 @@ declare global {
 export function Navbar() {
 	const location = useLocation();
 	const navigate = useNavigate();
+	const { user, logout } = useAuth();
+	const [showAuthModal, setShowAuthModal] = useState(false);
 
 	const isActive = (path: string) => location.pathname === path;
 
@@ -40,6 +47,13 @@ export function Navbar() {
 			"cart": "Cart",
 			"account": "Account",
 			"search": "Search",
+			"login": "Login",
+			"logout": "Logout",
+			"signup": "Sign Up",
+			"profile": "Profile",
+			"my_orders": "My Orders",
+			"my_bookings": "My Bookings",
+			"account_settings": "Settings",
 			// common UI
 			"view_details": "View Details",
 			"from_label": "From",
@@ -411,7 +425,7 @@ export function Navbar() {
 			"experience.6.title": "डेयरी फ़ार्म विज़िट",
 		},
 		te: {
-			"title": "రూట్స్ & రూట్స్",
+			"title": "రూట్స్ & రౌట్స్",
 			"tagline": "ఫారం టు టేబుల్",
 			"discover": "ఫారమ్‌లు కనుగొనండి",
 			"products": "ఉత్పత్తులు",
@@ -521,7 +535,7 @@ export function Navbar() {
 			"newsletter": "న్యూస్‌లెటర్",
 			"get_updates": "సీజనల్ ఉత్పత్తులపై అప్‌డేట్‌లు పొందండి",
 			"subscribe": "సబ్‌స్క్రైబ్ చేయండి",
-			"copyright": "© 2024 రూట్స్ & రూట్స్. అన్ని హక్కులు పరిరక్షించబడ్డాయి.",
+			"copyright": "© 2024 రూట్స్ & రౌట్స్. అన్ని హక్కులు పరిరక్షించబడ్డాయి.",
 			"404_title": "404",
 			"404_message": "అయ్యో! పేజీ కనుక లేదు",
 			"return_home": "హోమ్‌కు తిరుగు",
@@ -637,6 +651,7 @@ export function Navbar() {
 	// end added
 
 	return (
+		<>
 		<header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
 			<div className="container mx-auto px-4">
 				<div className="flex h-16 items-center justify-between">
@@ -729,11 +744,68 @@ export function Navbar() {
 								)}
 							</Button>
 						</a>
-						<a href="/account" onClick={handleNav("/account")}>
-							<Button variant="ghost" size="icon">
-								<User className="h-5 w-5" />
+
+						{user ? (
+							<DropdownMenu>
+								<DropdownMenuTrigger asChild>
+									<Button variant="ghost" className="flex items-center gap-2">
+										<Avatar className="h-8 w-8">
+											<AvatarImage src={user.avatar} />
+											<AvatarFallback>
+												{user.name?.charAt(0).toUpperCase() || 'U'}
+											</AvatarFallback>
+										</Avatar>
+										<span className="hidden sm:inline font-medium">{user.name}</span>
+									</Button>
+								</DropdownMenuTrigger>
+								<DropdownMenuContent align="end" className="w-56">
+									<DropdownMenuLabel className="font-normal">
+										<div className="flex flex-col space-y-1">
+											<p className="text-sm font-medium leading-none">{user.name}</p>
+											<p className="text-xs leading-none text-muted-foreground">
+												{user.email}
+											</p>
+											<p className="text-xs leading-none text-muted-foreground capitalize">
+												{user.role}
+											</p>
+										</div>
+									</DropdownMenuLabel>
+									<DropdownMenuSeparator />
+									{/* Show dashboard link for non-customer roles */}
+									{user.role !== 'customer' && (
+										<DropdownMenuItem onClick={() => navigate(getDashboardPath(user.role))}>
+											<LayoutDashboard className="mr-2 h-4 w-4" />
+											<span>Dashboard</span>
+										</DropdownMenuItem>
+									)}
+									<DropdownMenuItem onClick={() => navigate('/account')}>
+										<User className="mr-2 h-4 w-4" />
+										<span>{t("profile")}</span>
+									</DropdownMenuItem>
+									<DropdownMenuItem onClick={() => navigate('/account')}>
+										<Package className="mr-2 h-4 w-4" />
+										<span>{t("my_orders")}</span>
+									</DropdownMenuItem>
+									<DropdownMenuItem onClick={() => navigate('/account')}>
+										<Calendar className="mr-2 h-4 w-4" />
+										<span>{t("my_bookings")}</span>
+									</DropdownMenuItem>
+									<DropdownMenuItem onClick={() => navigate('/account')}>
+										<Settings className="mr-2 h-4 w-4" />
+										<span>{t("account_settings")}</span>
+									</DropdownMenuItem>
+									<DropdownMenuSeparator />
+									<DropdownMenuItem onClick={logout}>
+										<LogOut className="mr-2 h-4 w-4" />
+										<span>{t("logout")}</span>
+									</DropdownMenuItem>
+								</DropdownMenuContent>
+							</DropdownMenu>
+						) : (
+							<Button onClick={() => setShowAuthModal(true)} size="sm">
+								{t("login")}
 							</Button>
-						</a>
+						)}
 
 						<Button variant="ghost" size="icon" className="md:hidden">
 							<Menu className="h-5 w-5" />
@@ -742,5 +814,11 @@ export function Navbar() {
 				</div>
 			</div>
 		</header>
+
+		<AuthModal 
+			isOpen={showAuthModal} 
+			onClose={() => setShowAuthModal(false)} 
+		/>
+		</>
 	);
 }

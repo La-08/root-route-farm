@@ -2,9 +2,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Package, Calendar, Heart, Settings, ChevronRight } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Package, Calendar, Heart, Settings, ChevronRight, Tractor, Shield, Truck, User } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { useAuth } from "@/contexts/AuthContext";
+import { RoleInfo } from "@/components/RoleInfo";
 import strawberriesImage from "@/assets/strawberries.jpg";
 import vegetablesImage from "@/assets/vegetables-market.jpg";
 import experienceImage from "@/assets/farm-experience.jpg";
@@ -72,6 +75,8 @@ const statusColors = {
 } as const;
 
 export default function Account() {
+	const { user } = useAuth();
+	const navigate = useNavigate();
 	const [, setTick] = useState(0);
 	useEffect(() => {
 		const h = () => setTick((s) => s + 1);
@@ -82,6 +87,49 @@ export default function Account() {
 	const w = window as Win;
 	const t = (k: string) => w.__i18n?.t(k) ?? k;
 
+	// Redirect to login if not authenticated
+	if (!user) {
+		return (
+			<div className="min-h-screen bg-background flex items-center justify-center">
+				<div className="text-center">
+					<h1 className="text-2xl font-bold mb-4">Please Login</h1>
+					<p className="text-muted-foreground mb-6">You need to be logged in to access your account</p>
+					<Button onClick={() => navigate('/')}>Go to Home</Button>
+				</div>
+			</div>
+		);
+	}
+
+	const getDashboardLink = () => {
+		switch (user.role) {
+			case 'farmer': return '/farmer/dashboard';
+			case 'admin': return '/admin/dashboard';
+			case 'delivery': return '/delivery/dashboard';
+			default: return null;
+		}
+	};
+
+	const getDashboardIcon = () => {
+		switch (user.role) {
+			case 'farmer': return Tractor;
+			case 'admin': return Shield;
+			case 'delivery': return Truck;
+			default: return User;
+		}
+	};
+
+	const getRoleLabel = () => {
+		switch (user.role) {
+			case 'farmer': return 'Farmer Dashboard';
+			case 'admin': return 'Admin Dashboard';
+			case 'delivery': return 'Delivery Dashboard';
+			default: return 'Customer Account';
+		}
+	};
+
+	const dashboardLink = getDashboardLink();
+	const DashboardIcon = getDashboardIcon();
+
 	return (
 		<div className="min-h-screen bg-background">
 			<div className="container mx-auto px-4 py-8">
@@ -89,20 +137,53 @@ export default function Account() {
 				<div className="bg-card rounded-lg p-8 shadow-soft mb-8">
 					<div className="flex items-center gap-4">
 						<div className="h-20 w-20 rounded-full gradient-primary flex items-center justify-center text-white font-display text-3xl font-bold">
-							JD
+							{user.name?.charAt(0).toUpperCase() || 'U'}
 						</div>
-						<div>
+						<div className="flex-1">
 							<h1 className="font-display text-3xl font-bold mb-1">
-								John Doe
+								{user.name}
 							</h1>
 							<p className="text-muted-foreground">
-								john.doe@example.com
+								{user.email}
 							</p>
+							<Badge variant="outline" className="mt-2 capitalize">
+								{user.role}
+							</Badge>
 						</div>
+						{dashboardLink && (
+							<Button onClick={() => navigate(dashboardLink)} className="gap-2">
+								<DashboardIcon className="h-4 w-4" />
+								{getRoleLabel()}
+							</Button>
+						)}
 					</div>
 				</div>
 
-				{/* Tabs */}
+				{/* Role-specific dashboard preview */}
+				{dashboardLink && (
+					<Card className="mb-8">
+						<CardHeader>
+							<CardTitle className="flex items-center gap-2">
+								<DashboardIcon className="h-5 w-5" />
+								{getRoleLabel()}
+							</CardTitle>
+							<CardDescription>
+								{user.role === 'farmer' && "Manage your farm, products, and orders"}
+								{user.role === 'admin' && "Oversee platform operations and user management"}
+								{user.role === 'delivery' && "Track deliveries and manage your route"}
+								{user.role === 'customer' && "Manage your orders and bookings"}
+							</CardDescription>
+						</CardHeader>
+						<CardContent>
+							<Button onClick={() => navigate(dashboardLink)} className="w-full">
+								Go to Dashboard
+							</Button>
+						</CardContent>
+					</Card>
+				)}
+
+				{/* Tabs for customer account */}
+				{user.role === 'customer' && (
 				<Tabs defaultValue="orders" className="w-full">
 					<TabsList className="mb-8">
 						<TabsTrigger value="orders" className="gap-2">
@@ -372,6 +453,7 @@ export default function Account() {
 						</div>
 					</TabsContent>
 				</Tabs>
+				)}
 			</div>
 		</div>
 	);
