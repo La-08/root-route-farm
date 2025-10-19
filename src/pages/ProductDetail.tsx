@@ -3,6 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ProductCard } from "@/components/ProductCard";
+import { useCart } from "@/contexts/CartContext";
 import {
   MapPin,
   Star,
@@ -15,7 +16,6 @@ import {
 } from "lucide-react";
 import indianMangoesImage from "@/assets/indian-mangoes.jpg";
 import indianVegetablesImage from "@/assets/indian-vegetables.jpg";
-import { toast } from "sonner";
 
 const productData = {
   id: 1,
@@ -89,11 +89,19 @@ export default function ProductDetail() {
   const t = (k: string) => w.__i18n?.t(k) ?? k;
 
   const { id } = useParams();
+  const { addToCart } = useCart();
   const [quantity, setQuantity] = useState(1);
   const [selectedImage, setSelectedImage] = useState(0);
 
   const handleAddToCart = () => {
-    toast.success(`${quantity}kg of ${productData.name} added to cart!`);
+    addToCart({
+      id: productData.id,
+      name: productData.name,
+      farmName: productData.farm.name,
+      image: productData.images[0],
+      price: productData.price,
+      unit: "kg"
+    }, quantity);
   };
 
   return (
