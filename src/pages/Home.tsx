@@ -5,6 +5,7 @@ import { ExperienceCard } from "@/components/ExperienceCard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Truck, Shield, Award, ArrowRight } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
 import indianVegetablesImage from "@/assets/indian-vegetables.jpg";
 import indianFarmTourImage from "@/assets/indian-farm-tour.jpg";
 import indianMangoesImage from "@/assets/indian-mangoes.jpg";
@@ -124,6 +125,8 @@ export default function Home() {
 	type Win = Window & { __i18n?: { t: (k: string) => string } };
 	const w = window as Win;
 	const t = (k: string) => w.__i18n?.t(k) ?? k;
+
+	const { user } = useAuth();
 
 	return (
 		<div className="min-h-screen">
